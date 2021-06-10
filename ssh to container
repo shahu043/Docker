@@ -1,0 +1,42 @@
+To connect a docker container with ssh follow the steps..
+Run a container(ubuntu server) with port mapping for ssh service to be run inside the container (ex: -p 2222:22 here the 2222 port can be used for connecting the container with different machine, 22 is default port mapping for ssh which is running inside the container
+$ docker run -itd --name ubuntu_ssh --privileged=true -p 2222:22 ubuntu 
+--privileged=true here mentioned is to restart the services inside the container automatically
+2. Now open the container and install/conf the ssh service
+$ docker exec -it cointainerid/containername /bin/bash (it opens the container's bash)
+3.  Now we are in the container lets install the ssh service
+apt-get update 
+apt-get install ssh
+To start the ssh
+service ssh start
+To check the ssh status
+service --status-all
+4. Now set the password to the root user of this container
+passwd root
+Enter your password
+5.To add root permission in ssh config
+First install vim in your container
+apt-get install vim
+now open
+vim /etc/ssh/sshd_config
+Add this line to that file
+PermitRootLogin yes
+Now restart the ssh
+service ssh restart
+6. To save the container open a another terminal
+$ docker commit containerid  containername
+7. Now come back to the bash of the container
+just type exit to come out of that container
+And restart that container
+$ docker restart containerid
+And open the bash again by
+$ docker exec -it cointainerid/containername /bin/bash 
+Now start your ssh service  inside the container by
+service ssh start
+service --status-all 
+[+] ssh means ssh is running
+8. Now open a different machine and finnaly login the container through ssh
+ssh root@publicip -p 2222  
+It will prompt for password enter the password specified for root of container
+-Here the public ip is the ip of your machine with the container running it
+-we have specified the 2222 port because we have mapped that tcp to containers ssh service
